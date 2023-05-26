@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +33,7 @@ import java.util.List;
 
 public class BaccaratActivity extends AppCompatActivity {
     RelativeLayout layoutSignalBaccarat;
-
+    private AudioManager audioManager;
     LinearLayout AttemptsLayout;
     TextView txtSignalBaccarat, txtAttemptBaccarat;
     private AdapterBaccarat adapterBaccarat;
@@ -42,7 +44,7 @@ public class BaccaratActivity extends AppCompatActivity {
 
 ImageButton undoButton;
     int attempt = 0;
-    private MediaPlayer mediaPlayer;
+
     List<Integer> cardsCollection = new ArrayList<>();
 
     List<Integer> attempts = new ArrayList<>();
@@ -66,8 +68,13 @@ ImageButton undoButton;
         AttemptsLayout = (LinearLayout) this.findViewById(R.id.AttemptsLayout);
 
 
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
 
         resultListAll = new ArrayList<>();
 
@@ -142,7 +149,24 @@ ImageButton undoButton;
 
         addCardToList(result);
 
+        playSound();
+
+
     }
+
+    private void playSound() {
+        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.clicked_sound);
+        mediaPlayer.start();
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release(); // Release the MediaPlayer object after the sound has finished playing
+            }
+        });
+    }
+
+
+
 
     public void tieBaccaratClicked(View view) {
         updateView("T");
@@ -210,6 +234,11 @@ ImageButton undoButton;
         txtSignalBaccarat.setText("");
 
         AttemptsLayout.removeAllViews();
+
+        attempt = 0;
+        attempts.clear();
+
+        cardList.clear();
     }
 
 
@@ -585,26 +614,28 @@ ImageButton undoButton;
 
     private void playNotification() {
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.notification);
+//        mediaPlayer = MediaPlayer.create(this, R.raw.notification);
+//        mediaPlayer.start();
+
+        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.notification);
         mediaPlayer.start();
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release(); // Release the MediaPlayer object after the sound has finished playing
+            }
+        });
+
+
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-    }
 
     private void addResultIcon(int i) {
 
         TextView  textView =  new TextView(BaccaratActivity.this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-               60,
-                60
+                55,55
         );
         layoutParams.setMargins(2,2,2,2);
         textView.setLayoutParams(layoutParams);

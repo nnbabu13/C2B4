@@ -34,9 +34,9 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginBottom="100dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -48,13 +48,18 @@
             android:paddingRight="20dp">
 
             <EditText
+
+                android:singleLine="true"
                 android:textColorHint="@color/dim"
-                android:hint="Enter Activation  Code "
+                android:hint="Enter Email Address"
                 android:textColor="@color/white"
-                android:id="@+id/txtActivationCode"
+                android:id="@+id/txtActivationEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
+
+
+
 
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="wrap_content"
@@ -65,11 +70,33 @@
 
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="activateClicked"
-            android:text="Activate" />
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <EditText
+                android:id="@+id/txtActivationCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Enter Activation  Code "
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/dim" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="activateClicked"
+                android:text="Activate" />
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
 </LinearLayout>
