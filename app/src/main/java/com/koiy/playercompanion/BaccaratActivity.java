@@ -42,7 +42,7 @@ public class BaccaratActivity extends AppCompatActivity {
 
     List<String> resultsList, resultListAll;
 
-ImageButton undoButton;
+    ImageButton undoButton;
     int attempt = 0;
 
     List<Integer> cardsCollection = new ArrayList<>();
@@ -66,7 +66,6 @@ ImageButton undoButton;
         setContentView(R.layout.activity_baccarat);
         container = (LinearLayout) this.findViewById(R.id.container);
         AttemptsLayout = (LinearLayout) this.findViewById(R.id.AttemptsLayout);
-
 
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -166,10 +165,9 @@ ImageButton undoButton;
     }
 
 
-
-
     public void tieBaccaratClicked(View view) {
         updateView("T");
+//        Log.e("CardList", cardList.size() + "");
     }
 
 
@@ -244,8 +242,6 @@ ImageButton undoButton;
 
     private void addCardToList(String card) {
 
-//        for (String card : cards) {
-
 
         if (card.equals(PLAYER)) {
             cardList.add(PLAYER);
@@ -254,13 +250,11 @@ ImageButton undoButton;
             cardList.add(BANKER);
             checkIt();
         } else {
-            if (cardList.size() >= 2) {
-                cardList.add(TIE);
-            }
+//            if (cardList.size() >= 2) {
+//                cardList.add(TIE);
+//            }
         }
 
-
-//        }
 
     }
 
@@ -318,7 +312,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -333,7 +327,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -346,7 +340,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -360,7 +354,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -382,7 +376,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -395,7 +389,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -408,7 +402,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -422,7 +416,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -445,7 +439,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -458,7 +452,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -471,7 +465,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -485,7 +479,7 @@ ImageButton undoButton;
                     } else {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
 
@@ -505,7 +499,7 @@ ImageButton undoButton;
                     if (card6.equals(setA.get(5))) {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
                     } else {
@@ -517,7 +511,7 @@ ImageButton undoButton;
                     if (card6.equals(setB.get(5))) {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
                     } else {
@@ -528,7 +522,7 @@ ImageButton undoButton;
                     if (card6.equals(setC.get(5))) {
 
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
                     } else {
@@ -538,7 +532,7 @@ ImageButton undoButton;
                     Log.e("setD", card6 + " " + setD.get(5));
                     if (card6.equals(setD.get(5))) {
                         txtSignalBaccarat.setText("");
-                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_blue);
+                        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
                         cardList.clear();
                         addResultIcon(1);
                     } else {
@@ -551,6 +545,12 @@ ImageButton undoButton;
 
         }
 
+        if(cardList.size() == 6){
+            cardList.clear();
+            txtSignalBaccarat.setText("");
+            txtAttemptBaccarat.setVisibility(View.INVISIBLE);
+            layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
+        }
 
         viewAttempt();
     }
@@ -627,24 +627,23 @@ ImageButton undoButton;
         });
 
 
-
     }
 
 
     private void addResultIcon(int i) {
 
-        TextView  textView =  new TextView(BaccaratActivity.this);
+        TextView textView = new TextView(BaccaratActivity.this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                55,55
+                70, 70
         );
-        layoutParams.setMargins(2,2,2,2);
+        layoutParams.setMargins(2, 2, 2, 2);
         textView.setLayoutParams(layoutParams);
         textView.setGravity(Gravity.CENTER);
         textView.setTextColor(getResources().getColor(R.color.white));
 
         if (i == 1) {
             attempts.add(attempt);
-            textView.setText(attempt+"");
+            textView.setText(attempt + "");
             textView.setBackgroundResource(R.drawable.circle_green);
 
         } else {

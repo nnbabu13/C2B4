@@ -40,6 +40,11 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
     public void baccaratClick(View view) {
         startActivity(new Intent(this,BaccaratActivity.class));
     }

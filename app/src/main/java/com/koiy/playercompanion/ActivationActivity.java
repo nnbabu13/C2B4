@@ -39,6 +39,7 @@ public class ActivationActivity extends AppCompatActivity {
 
         if (inputCode.equals(code)) {
             startActivity(new Intent(this, MainActivity.class));
+            finish();
         } else {
 
         }

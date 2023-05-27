@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/supersicbologo" />
+            android:src="@drawable/supersicbologo_smallbig" />
 
         <LinearLayout
             android:id="@+id/layoutSignal"
