@@ -48,5 +48,10 @@ public class MainActivity extends AppCompatActivity  {
     public void baccaratClick(View view) {
         startActivity(new Intent(this,BaccaratActivity.class));
     }
+
+    public void sicboOddEvenClicked(View view) {
+        startActivity(new Intent(this,SicboOddEvenActivity.class));
+
+    }
 }
 

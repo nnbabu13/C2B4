@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.koiy.playercompanion"
-        minSdk 26
+        minSdk 24
         targetSdk 33
         versionCode 3
         versionName "1.0"
