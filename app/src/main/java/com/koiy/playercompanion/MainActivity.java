@@ -53,5 +53,10 @@ public class MainActivity extends AppCompatActivity  {
         startActivity(new Intent(this,SicboOddEvenActivity.class));
 
     }
+
+    public void baccaratHongKongClick(View view) {
+
+        startActivity(new Intent(this,BaccaratHongkongActivity.class));
+    }
 }
 

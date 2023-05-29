@@ -11,41 +11,49 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.widget.GridView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Timer;
 
 public class BaccaratActivity extends AppCompatActivity {
     RelativeLayout layoutSignalBaccarat;
     private AudioManager audioManager;
+
+
+    String previousCard;
     LinearLayout AttemptsLayout;
-    TextView txtSignalBaccarat, txtAttemptBaccarat;
-    private AdapterBaccarat adapterBaccarat;
-    LinearLayout container;
-    RecyclerView recyclerView;
+    TextView txtSignalBaccarat, txtAttemptBaccarat, txtAttemptBaccaratCounter;
+    private AdapterBaccaratBigRoad adapterBaccaratBigRoad;
+    private AdapterBaccaratBeadRoad adapterBaccaratBeadRoad;
+    LinearLayout containerBigRoad;
+    LinearLayout containerBeadRoad;
+    RecyclerView recyclerViewBigRoad, recyclerViewBeadRoad;
 
-    List<String> resultsList, resultListAll;
-
+    List<String> resultsListBigRaod, resultListAll, hongkongPatternList, hongkongToCompareList;
+    List<String> resultsListBeadRoad, resultsListBigRoad;
     ImageButton undoButton;
     int attempt = 0;
 
-    List<Integer> cardsCollection = new ArrayList<>();
+    private Handler handler;
+    private Timer timer;
+    private int scrollSpeed = 1; // Adjust this value to control scroll speed
+    private int delayMillis = 10; // Adjust this value to control delay between scrolls
+
+    private HorizontalScrollView horizontalScrollViewBeadRoad, horizontalScrollViewBigRoad;
 
     List<Integer> attempts = new ArrayList<>();
 
@@ -64,8 +72,12 @@ public class BaccaratActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_baccarat);
-        container = (LinearLayout) this.findViewById(R.id.container);
+        containerBigRoad = (LinearLayout) this.findViewById(R.id.containerBigRoad);
+        containerBeadRoad = (LinearLayout) this.findViewById(R.id.containerBeadRoad);
+
         AttemptsLayout = (LinearLayout) this.findViewById(R.id.AttemptsLayout);
+        horizontalScrollViewBeadRoad = findViewById(R.id.horizontalScrollViewBeadRoad);
+        horizontalScrollViewBigRoad = findViewById(R.id.horizontalScrollViewBigRoad);
 
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -76,41 +88,70 @@ public class BaccaratActivity extends AppCompatActivity {
 
 
         resultListAll = new ArrayList<>();
+        hongkongPatternList = new ArrayList<>();
+        hongkongToCompareList = new ArrayList<>();
 
-        recyclerView = new RecyclerView(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        container.addView(recyclerView);
+        recyclerViewBeadRoad = new RecyclerView(this);
+        recyclerViewBeadRoad.setLayoutManager(new LinearLayoutManager(this));
+        containerBeadRoad.addView(recyclerViewBeadRoad);
+        resultsListBeadRoad = new ArrayList<>();
+        displayResultToViewBeadRoad(resultsListBeadRoad);
 
-        resultsList = new ArrayList<>();
-        displayResultToView(resultsList);
 
-        AttemptsLayout = (LinearLayout) this.findViewById(R.id.AttemptsLayout);
+        recyclerViewBigRoad = new RecyclerView(this);
+        recyclerViewBigRoad.setLayoutManager(new LinearLayoutManager(this));
+        containerBigRoad.addView(recyclerViewBigRoad);
+        resultsListBigRaod = new ArrayList<>();
+        displayResultToViewBigRoad(resultsListBigRaod);
+
+
         layoutSignalBaccarat = (RelativeLayout) this.findViewById(R.id.layoutSignalBaccarat);
         txtSignalBaccarat = (TextView) this.findViewById(R.id.txtSignalBaccarat);
         txtAttemptBaccarat = (TextView) this.findViewById(R.id.txtAttemptBaccarat);
+        txtAttemptBaccaratCounter = (TextView) this.findViewById(R.id.txtAttemptBaccaratCounter);
         undoButton = this.findViewById(R.id.undoButton);
 
         undoButton.setVisibility(View.INVISIBLE);
+
+
+    }
+
+    private void displayResultToViewBigRoad(List<String> result) {
+
+        adapterBaccaratBigRoad = new AdapterBaccaratBigRoad(result);
+        recyclerViewBigRoad.setAdapter(adapterBaccaratBigRoad);
+
+
+    }
+
+
+    private void displayResultToViewBeadRoad(List<String> result) {
+
+        adapterBaccaratBeadRoad = new AdapterBaccaratBeadRoad(result);
+        recyclerViewBeadRoad.setAdapter(adapterBaccaratBeadRoad);
+
 
     }
 
 
     public void bankerBaccatClicked(View view) {
-        updateView("B");
+        updateViewBeadRoad("B");
+        updateViewBigRoad("B");
     }
 
     public void playerBaccaratClicked(View view) {
 
 
-        updateView("P");
+        updateViewBeadRoad("P");
+        updateViewBigRoad("P");
 
 
     }
 
-    void updateView(String result) {
+    void updateViewBeadRoad(String result) {
 
         List<String> list = new ArrayList<>();
-        list.addAll(resultsList);
+        list.addAll(resultsListBeadRoad);
 
 
         if (result.equals("UNDO")) {
@@ -119,11 +160,9 @@ public class BaccaratActivity extends AppCompatActivity {
             if (lastIndex >= 0) {
                 list.remove(lastIndex);
             }
-            adapterBaccarat.updateData(list);
+            adapterBaccaratBeadRoad.updateData(list);
 
-            if (list.size() == 0) {
-                Toast.makeText(this, "Only 1 column is allowed to undo", Toast.LENGTH_SHORT).show();
-            }
+
 
         } else {
             resultListAll.add(result);
@@ -132,17 +171,56 @@ public class BaccaratActivity extends AppCompatActivity {
             if (list.size() == 7) {
 
 
-                recyclerView = new RecyclerView(this);
-                recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                container.addView(recyclerView);
+                recyclerViewBeadRoad = new RecyclerView(this);
+                recyclerViewBeadRoad.setLayoutManager(new LinearLayoutManager(this));
+                containerBeadRoad.addView(recyclerViewBeadRoad);
 
-                resultsList = new ArrayList<>();
-                resultsList.add(result);
-                displayResultToView(resultsList);
+                resultsListBeadRoad = new ArrayList<>();
+                resultsListBeadRoad.add(result);
+                displayResultToViewBeadRoad(resultsListBeadRoad);
 
             } else {
 
-                adapterBaccarat.updateData(list);
+                adapterBaccaratBeadRoad.updateData(list);
+            }
+        }
+
+
+    }
+
+    void updateViewBigRoad(String result) {
+
+        List<String> list = new ArrayList<>();
+        list.addAll(resultsListBigRaod);
+
+
+        if (result.equals("UNDO")) {
+
+            int lastIndex = list.size() - 1;
+            if (lastIndex >= 0) {
+                list.remove(lastIndex);
+            }
+            adapterBaccaratBigRoad.updateData(list);
+
+
+        } else {
+            resultListAll.add(result);
+
+
+            list.add(result);
+            if (result != TIE && previousCard != result) {
+                previousCard = result;
+                recyclerViewBigRoad = new RecyclerView(this);
+                recyclerViewBigRoad.setLayoutManager(new LinearLayoutManager(this));
+                containerBigRoad.addView(recyclerViewBigRoad);
+
+                resultsListBigRaod = new ArrayList<>();
+                resultsListBigRaod.add(result);
+                displayResultToViewBigRoad(resultsListBigRaod);
+
+            } else {
+
+                adapterBaccaratBigRoad.updateData(list);
             }
         }
 
@@ -152,6 +230,7 @@ public class BaccaratActivity extends AppCompatActivity {
 
 
     }
+
 
     private void playSound() {
         MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.clicked_sound);
@@ -166,23 +245,15 @@ public class BaccaratActivity extends AppCompatActivity {
 
 
     public void tieBaccaratClicked(View view) {
-        updateView("T");
+        updateViewBeadRoad("T");
+        playSound();
 //        Log.e("CardList", cardList.size() + "");
     }
 
 
-    private void displayResultToView(List<String> result) {
-
-
-        adapterBaccarat = new AdapterBaccarat(result);
-        recyclerView.setAdapter(adapterBaccarat);
-
-
-    }
-
     public void undoBaccatClicked(View view) {
 
-        updateView("UNDO");
+        updateViewBeadRoad("UNDO");
     }
 
     public void resetBaccaratClicked(View view) {
@@ -219,24 +290,36 @@ public class BaccaratActivity extends AppCompatActivity {
 
     private void resetAll() {
 
-        container.removeAllViews();
-        recyclerView = new RecyclerView(BaccaratActivity.this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(BaccaratActivity.this));
-        container.addView(recyclerView);
-
-        resultsList = new ArrayList<>();
-        displayResultToView(resultsList);
-
-        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
-        txtAttemptBaccarat.setText("");
-        txtSignalBaccarat.setText("");
 
         AttemptsLayout.removeAllViews();
 
+        previousCard = "";
+
+        containerBigRoad.removeAllViews();
+        recyclerViewBigRoad = new RecyclerView(this);
+        recyclerViewBigRoad.setLayoutManager(new LinearLayoutManager(this));
+        containerBigRoad.addView(recyclerViewBigRoad);
+        resultsListBigRaod = new ArrayList<>();
+        displayResultToViewBigRoad(resultsListBigRaod);
+
+        containerBeadRoad.removeAllViews();
+        recyclerViewBeadRoad = new RecyclerView(this);
+        recyclerViewBeadRoad.setLayoutManager(new LinearLayoutManager(this));
+        containerBeadRoad.addView(recyclerViewBeadRoad);
+        resultsListBeadRoad = new ArrayList<>();
+        displayResultToViewBeadRoad(resultsListBeadRoad);
+
+
+        layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
+        txtAttemptBaccarat.setText("");
+        txtAttemptBaccaratCounter.setText("");
+        txtSignalBaccarat.setText("");
+
         attempt = 0;
         attempts.clear();
-
         cardList.clear();
+
+
     }
 
 
@@ -250,9 +333,7 @@ public class BaccaratActivity extends AppCompatActivity {
             cardList.add(BANKER);
             checkIt();
         } else {
-//            if (cardList.size() >= 2) {
-//                cardList.add(TIE);
-//            }
+
         }
 
 
@@ -545,10 +626,11 @@ public class BaccaratActivity extends AppCompatActivity {
 
         }
 
-        if(cardList.size() == 6){
+        if (cardList.size() == 6) {
             cardList.clear();
             txtSignalBaccarat.setText("");
             txtAttemptBaccarat.setVisibility(View.INVISIBLE);
+            txtAttemptBaccaratCounter.setVisibility(View.INVISIBLE);
             layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
         }
 
@@ -558,7 +640,8 @@ public class BaccaratActivity extends AppCompatActivity {
     private void viewAttempt() {
 
 
-        txtAttemptBaccarat.setText("Attempt " + attempt);
+        txtAttemptBaccarat.setText("Attempt");
+        txtAttemptBaccaratCounter.setText(attempt + "");
 
 
         if (attempt == 4) {
@@ -566,6 +649,7 @@ public class BaccaratActivity extends AppCompatActivity {
             playNotification();
 
             txtAttemptBaccarat.setVisibility(View.VISIBLE);
+            txtAttemptBaccaratCounter.setVisibility(View.VISIBLE);
             txtAttemptBaccarat.setTextColor(getResources().getColor(R.color.darkRed));
 
             // Create the blinking animation
@@ -574,14 +658,15 @@ public class BaccaratActivity extends AppCompatActivity {
             blinkAnimation.setRepeatMode(Animation.REVERSE);
             blinkAnimation.setRepeatCount(Animation.INFINITE);
             // Apply the animation to the TextView
-            txtAttemptBaccarat.startAnimation(blinkAnimation);
+            txtAttemptBaccaratCounter.startAnimation(blinkAnimation);
 
 
         } else if (attempt == 3) {
 
 
             txtAttemptBaccarat.setVisibility(View.VISIBLE);
-            txtAttemptBaccarat.setTextColor(Color.YELLOW);
+            txtAttemptBaccaratCounter.setVisibility(View.VISIBLE);
+            txtAttemptBaccaratCounter.setTextColor(Color.YELLOW);
 
             // Create the blinking animation
             Animation blinkAnimation = new AlphaAnimation(0.0f, 1.0f);
@@ -589,21 +674,25 @@ public class BaccaratActivity extends AppCompatActivity {
             blinkAnimation.setRepeatMode(Animation.REVERSE);
             blinkAnimation.setRepeatCount(Animation.INFINITE);
             // Apply the animation to the TextView
-            txtAttemptBaccarat.startAnimation(blinkAnimation);
+            txtAttemptBaccaratCounter.startAnimation(blinkAnimation);
+
 
 
         } else if (attempt == 2) {
             txtAttemptBaccarat.setVisibility(View.VISIBLE);
-            txtAttemptBaccarat.setTextColor(Color.WHITE);
+            txtAttemptBaccaratCounter.setVisibility(View.VISIBLE);
+            txtAttemptBaccaratCounter.setTextColor(Color.WHITE);
 
         } else if (attempt == 1) {
 
-            txtAttemptBaccarat.setTextColor(Color.WHITE);
+            txtAttemptBaccaratCounter.setTextColor(Color.WHITE);
             txtAttemptBaccarat.setVisibility(View.VISIBLE);
+            txtAttemptBaccaratCounter.setVisibility(View.VISIBLE);
         } else {
 
-            txtAttemptBaccarat.clearAnimation();
+            txtAttemptBaccaratCounter.clearAnimation();
             txtAttemptBaccarat.setVisibility(View.INVISIBLE);
+            txtAttemptBaccaratCounter.setVisibility(View.INVISIBLE);
             layoutSignalBaccarat.setBackgroundResource(R.color.dark_green);
 
 
@@ -613,9 +702,6 @@ public class BaccaratActivity extends AppCompatActivity {
     }
 
     private void playNotification() {
-
-//        mediaPlayer = MediaPlayer.create(this, R.raw.notification);
-//        mediaPlayer.start();
 
         MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.notification);
         mediaPlayer.start();
@@ -633,8 +719,7 @@ public class BaccaratActivity extends AppCompatActivity {
     private void addResultIcon(int i) {
 
         TextView textView = new TextView(BaccaratActivity.this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                70, 70
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(55, 55
         );
         layoutParams.setMargins(2, 2, 2, 2);
         textView.setLayoutParams(layoutParams);
