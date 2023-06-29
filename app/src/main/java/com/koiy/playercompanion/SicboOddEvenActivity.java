@@ -12,6 +12,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class SicboOddEvenActivity extends AppCompatActivity {
 
@@ -28,31 +30,53 @@ public class SicboOddEvenActivity extends AppCompatActivity {
     Handler handler;
     int attempt = 0;
     private MediaPlayer mediaPlayer;
-    List<Integer> cardsCollection =  new ArrayList<>();
-    Integer[] oddNumbers =  { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
-    Integer[] evenNumbers =  {  2, 4, 6, 8, 10, 12, 14, 16, 18   };
-    List<Integer> attempts = new  ArrayList<>();
+    List<Integer> cardsCollection = new ArrayList<>();
+    Integer[] oddNumbers = {1, 3, 5, 7, 9, 11, 13, 15, 17, 19};
+    Integer[] evenNumbers = {2, 4, 6, 8, 10, 12, 14, 16, 18};
+    List<Integer> attempts = new ArrayList<>();
 
     String ODD = "O";
     String EVEN = "E";
     String TRIPLE = "T";
 
+
+    List<String> moneyPickerList = new ArrayList<>();
+
+    String mp1 = "";
+    String mp2 = "";
+    String mp3 = "";
+    String mp4 = "";
+
+
     List<String> cardList = new ArrayList<>();
-    List<String> setA = new ArrayList<>(Arrays.asList("O", "O", "O", "E", "E", "E")) ;
-    List<String> setB = new ArrayList<>(Arrays.asList( "O", "E", "O", "O", "E", "O" )) ;
-    List<String> setC = new ArrayList<>(Arrays.asList( "E", "E", "E", "O", "O", "O" )) ;
-    List<String> setD = new ArrayList<>(Arrays.asList( "E", "O", "E", "E", "O", "E" )) ;
+    List<String> set1 = new ArrayList<>(Arrays.asList("O", "O", "O", "O"));
+    List<String> set2 = new ArrayList<>(Arrays.asList("O", "O", "O", "E"));
+    List<String> set3 = new ArrayList<>(Arrays.asList("O", "O", "E", "O"));
+    List<String> set4 = new ArrayList<>(Arrays.asList("O", "E", "O", "O"));
+    List<String> set5 = new ArrayList<>(Arrays.asList("O", "E", "E", "E"));
+    List<String> set6 = new ArrayList<>(Arrays.asList("O", "E", "O", "E"));
+    List<String> set7 = new ArrayList<>(Arrays.asList("O", "E", "E", "O"));
+    List<String> set8 = new ArrayList<>(Arrays.asList("O", "O", "E", "E"));
+    List<String> set9 = new ArrayList<>(Arrays.asList("E", "E", "E", "E"));
+    List<String> set10 = new ArrayList<>(Arrays.asList("E", "E", "E", "O"));
+    List<String> set11 = new ArrayList<>(Arrays.asList("E", "E", "O", "E"));
+    List<String> set12 = new ArrayList<>(Arrays.asList("E", "O", "E", "E"));
+    List<String> set13 = new ArrayList<>(Arrays.asList("E", "O", "O", "O"));
+    List<String> set14 = new ArrayList<>(Arrays.asList("E", "O", "O", "E"));
+    List<String> set15 = new ArrayList<>(Arrays.asList("E", "O", "E", "O"));
+    List<String> set16 = new ArrayList<>(Arrays.asList("E", "E", "O", "O"));
 
 
     GridView resultGridview;
     GridView attemptsGridview;
-    TextView lblSignal  = null;
+    TextView lblSignal = null;
     TextView txtBoxAttemptCount = null;
     TextView attemptLabel = null;
 
-    ImageView imgSicBoLogoCenter =  null;
+    ImageView imgSicBoLogoCenter = null;
 
-     LinearLayout layoutSignal;
+    LinearLayout layoutSignal;
+
     @Override
     public void onBackPressed() {
         finish();
@@ -66,8 +90,8 @@ public class SicboOddEvenActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-        imgSicBoLogoCenter =  (ImageView)this.findViewById(R.id.imgSicBoLogoCenter);
-        layoutSignal = (LinearLayout)this.findViewById(R.id.layoutSignal);
+        imgSicBoLogoCenter = (ImageView) this.findViewById(R.id.imgSicBoLogoCenter);
+        layoutSignal = (LinearLayout) this.findViewById(R.id.layoutSignal);
 
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -76,12 +100,11 @@ public class SicboOddEvenActivity extends AppCompatActivity {
         lblSignal = (TextView) this.findViewById(R.id.lblSignal);
 
 
-        txtBoxAttemptCount= (TextView) this.findViewById(R.id.txtBoxAttemptCount);
-        attemptLabel= (TextView) this.findViewById(R.id.attemptLabel);
+        txtBoxAttemptCount = (TextView) this.findViewById(R.id.txtBoxAttemptCount);
+        attemptLabel = (TextView) this.findViewById(R.id.attemptLabel);
 
         attemptLabel.setVisibility(View.INVISIBLE);
         txtBoxAttemptCount.setVisibility(View.INVISIBLE);
-
 
 
         attempt = 0;
@@ -94,9 +117,9 @@ public class SicboOddEvenActivity extends AppCompatActivity {
 
                 new getSuperSicBoResult().execute();
 
-                String r   =  variables.RESULT;
+                String r = variables.RESULT;
 
-                if(r != null && !r.equals("")){
+                if (r != null && !r.equals("")) {
 
                     Gson gson = new Gson();
                     SicBoResponse sicBoResponse = gson.fromJson(r, SicBoResponse.class);
@@ -104,17 +127,15 @@ public class SicboOddEvenActivity extends AppCompatActivity {
                     long[] diceResult = sicBoResponse.getData()[0].getDice();
 
                     int totalDiceResult = 0;
-                    for (long i:diceResult) {
+                    for (long i : diceResult) {
                         totalDiceResult += i;
                     }
 
-                    if (diceResult[0] == diceResult[1] && diceResult[1] == diceResult[2])
-                    {
+                    if (diceResult[0] == diceResult[1] && diceResult[1] == diceResult[2]) {
                         totalDiceResult = 0;
                     }
 
-                    if (variables.whenLastResult != whenResult)
-                    {
+                    if (variables.whenLastResult != whenResult) {
                         variables.whenLastResult = whenResult;
 
                         displayToView(totalDiceResult);
@@ -127,17 +148,14 @@ public class SicboOddEvenActivity extends AppCompatActivity {
                 handler.postDelayed(this, 2000);
 
 
-
             }
         };
         handler.postDelayed(runnable, 2000);
 
 
-
-
     }
 
-    private  void displayToView(Integer x){
+    private void displayToView(Integer x) {
 
 
         cardsCollection.add(x);
@@ -151,8 +169,6 @@ public class SicboOddEvenActivity extends AppCompatActivity {
         resultGridview.setAdapter(customAdapterResults);
 
 
-
-
         List<Integer> evens = Arrays.asList(evenNumbers);
         List<Integer> odds = Arrays.asList(oddNumbers);
 
@@ -162,431 +178,193 @@ public class SicboOddEvenActivity extends AppCompatActivity {
         Collections.reverse(attemptResults);
 
         int c = attemptResults.get(0);
-        if (evens.contains(c))
-        {
+        if (evens.contains(c)) {
             cardList.add(EVEN);
 
-        }
-        else if (odds.contains(c))
-        {
+        } else if (odds.contains(c)) {
             cardList.add(ODD);
-        }
-        else
-        {
-            if(cardList.size() > 2)
-            {
+        } else {
+            if (cardList.size() > 2) {
                 cardList.add(TRIPLE);
             }
         }
 
 
-        checkIt();
+            checkIt(x);
+
+            List<Integer> attemptsReversed = new ArrayList<>();
+            attemptsReversed.addAll(attempts);
+            Collections.reverse(attemptsReversed);
 
 
-        List<Integer> attemptsReversed = new ArrayList<>();
-        attemptsReversed.addAll(attempts);
-        Collections.reverse(attemptsReversed);
-
-
-
-        //ATTEMPTS GRIDVIEW
-        attemptsGridview = (GridView) findViewById(R.id.gridviewAttempts);
-        CustomAdapterAttempts customAdapterAttempts = new CustomAdapterAttempts(getApplicationContext(), attemptsReversed);
-        attemptsGridview.setAdapter(customAdapterAttempts);
+            //ATTEMPTS GRIDVIEW
+            attemptsGridview = (GridView) findViewById(R.id.gridviewAttempts);
+            CustomAdapterAttempts customAdapterAttempts = new CustomAdapterAttempts(getApplicationContext(), attemptsReversed);
+            attemptsGridview.setAdapter(customAdapterAttempts);
 
 
 
     }
 
+    List<String> getMoneyPicker(int selector) {
+        List<String> list = new ArrayList<>();
+
+        if (selector == 3) {
+            list.addAll(set1);
+        } else if (selector == 4) {
+            list.addAll(set2);
+        } else if (selector == 5) {
+            list.addAll(set3);
+        } else if (selector == 6) {
+            list.addAll(set4);
+        } else if (selector == 7) {
+            list.addAll(set5);
+        } else if (selector == 8) {
+            list.addAll(set6);
+        } else if (selector == 9) {
+            list.addAll(set7);
+        } else if (selector == 10) {
+            list.addAll(set8);
+        } else if (selector == 11) {
+            list.addAll(set9);
+        } else if (selector == 12) {
+            list.addAll(set10);
+        } else if (selector == 13) {
+            list.addAll(set11);
+        } else if (selector == 14) {
+            list.addAll(set12);
+        } else if (selector == 15) {
+            list.addAll(set13);
+        } else if (selector == 16) {
+            list.addAll(set14);
+        } else if (selector == 17) {
+            list.addAll(set15);
+        } else if (selector == 18) {
+            list.addAll(set16);
+        }
+
+        return list;
+    }
 
 
-    private void checkIt() {
+    void setForcast(String forcast) {
+
+        txtBoxAttemptCount.setText(attempt + "");
+        if (forcast.equals("O")) {
+            lblSignal.setText("BET ODD");
+            lblSignal.setBackgroundResource(R.color.blue);
+        } else {
+            lblSignal.setText("BET EVEN");
+            lblSignal.setBackgroundResource(R.color.red);
+        }
+
+    }
+
+
+    private void checkIt(int selector) {
 
         int x = cardList.size();
 
 
-
-
-        String card1 = "";
         String card2 = "";
         String card3 = "";
         String card4 = "";
         String card5 = "";
-        String card6 = "";
 
-        String oddSignal = "ODD";
-        String evenSignal = "EVEN";
 
         switch (x) {
+            case 1:
 
-            case 2:
-                card1 = cardList.get(0);
-                card2 = cardList.get(1);
-                if (card1.equals(ODD) && card2.equals(ODD))
-                {
-                    attempt++;
 
-                    lblSignal.setText(oddSignal);
-                    lblSignal.setBackgroundResource(R.color.blue);
-                }
-                else if (card1.equals(ODD) && card2.equals(EVEN))
-                {
-                    attempt++;
-                    lblSignal.setText(oddSignal);
-                    lblSignal.setBackgroundResource(R.color.blue);
-                }
-                else if (card1.equals(EVEN) && card2.equals(EVEN))
-                {
-                    attempt++;
-                    lblSignal.setText(evenSignal);
-                    lblSignal.setBackgroundResource(R.color.red);
-                }
-                else if (card1.equals(EVEN) && card2.equals(ODD))
-                {
+                moneyPickerList = getMoneyPicker(selector);
 
-                    attempt++;
-                    lblSignal.setText(evenSignal);
-                    lblSignal.setBackgroundResource(R.color.red);
-                }
+                mp1 = moneyPickerList.get(0);
+                mp2 = moneyPickerList.get(1);
+                mp3 = moneyPickerList.get(2);
+                mp4 = moneyPickerList.get(3);
+
+
+                attempt++;
+                setForcast(mp1);
+                attemptLabel.setText(mp1 + " - " + mp2 + " - " + mp3 + " - " + mp4);
 
                 break;
+            case 2:
 
-            case 3:
-                card1 = cardList.get(0);
+
                 card2 = cardList.get(1);
+
+                if (!card2.equals(mp1)) {
+                    attempt++;
+                    setForcast(mp2);
+                } else {
+
+                    addResultIcon(1);
+
+                }
+                System.out.println(x + " CASE 2");
+                break;
+            case 3:
+
                 card3 = cardList.get(2);
 
-                if (card1.equals(ODD) && card2.equals(ODD))
-                {
-                    if (!card3.equals(setA.get(2)))
-                    {
-                        attempt++;
-                        lblSignal.setText(evenSignal);
-                        lblSignal.setBackgroundResource(R.color.red);
-                    }
-                    else
-                    {
+                if (!card3.equals(mp2)) {
+                    attempt++;
+                    setForcast(mp3);
+                } else {
 
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-
-                    }
-
-
-
+                    addResultIcon(1);
                 }
-                else if (card1.equals(ODD) && card2.equals(EVEN))
-                {
-                    if (!card3.equals(setB.get(2)))
-                    {
-                        attempt++;
-                        lblSignal.setText(oddSignal);
-                        lblSignal.setBackgroundResource(R.color.blue);
-                    }
-                    else
-                    {
-
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-
-                    }
-                }
-                else if (card1.equals(EVEN) && card2.equals(EVEN))
-                {
-                    if (!card3.equals(setC.get(2)))
-                    {
-                        attempt++;
-                        lblSignal.setText(oddSignal);
-                        lblSignal.setBackgroundResource(R.color.blue);
-                    }
-                    else
-                    {
-
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-
-                    }
-                }
-                else if (card1.equals(EVEN) && card2.equals(ODD))
-                {
-
-                    if (!card3.equals(setD.get(2)))
-                    {
-                        attempt++;
-                        lblSignal.setText(evenSignal);
-                        lblSignal.setBackgroundResource(R.color.red);
-                    }
-                    else
-                    {
-
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-
-                    }
-                }
-
                 break;
-
             case 4:
-                card1 = cardList.get(0);
-                card2 = cardList.get(1);
+
                 card4 = cardList.get(3);
 
-                if (card1.equals(ODD) && card2.equals(ODD))
-                {
-                    if (!card4.equals(setA.get(3)))
-                    {
-                        attempt++;
-                        lblSignal.setText(evenSignal);
-                        lblSignal.setBackgroundResource(R.color.red);
-                    }
-                    else
-                    {
+                if (!card4.equals(mp3)) {
+                    attempt++;
+                    setForcast(mp4);
+                } else {
 
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-
-                    }
-                }
-                else if (card1.equals(ODD) && card2.equals(EVEN))
-                {
-                    if (!card4.equals(setB.get(3)))
-                    {
-                        attempt++;
-                        lblSignal.setText(evenSignal);
-                        lblSignal.setBackgroundResource(R.color.red);
-                    }
-                    else
-                    {
-
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-
-                    }
-                }
-                else if (card1.equals(EVEN) && card2.equals(EVEN))
-                {
-                    if (!card4.equals(setC.get(3)))
-                    {
-                        attempt++;
-                        lblSignal.setText(oddSignal);
-                        lblSignal.setBackgroundResource(R.color.blue);
-                    }
-                    else
-                    {
-
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-
-                    }
-                }
-                else if (card1.equals(EVEN) && card2.equals(ODD))
-                {
-
-                    if (!card4.equals(setD.get(3)))
-                    {
-                        attempt++;
-                        lblSignal.setText(oddSignal);
-                        lblSignal.setBackgroundResource(R.color.blue);
-                    }
-                    else
-                    {
-
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-
-                    }
+                    addResultIcon(1);
                 }
 
+                System.out.println(x + " CASE 3");
                 break;
-
-
             case 5:
-                card1 = cardList.get(0);
-                card2 = cardList.get(1);
+
                 card5 = cardList.get(4);
 
-                if (card1.equals(ODD) && card2.equals(ODD))
-                {
-                    if (!card5.equals(setA.get(4)))
-                    {
-                        attempt++;
-                        lblSignal.setText(evenSignal);
-                        lblSignal.setBackgroundResource(R.color.red);
-                    }
-                    else
-                    {
+                if (!card5.equals(mp4)) {
 
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
 
-                    }
-                }
-                else if (card1.equals(ODD) && card2.equals(EVEN))
-                {
-                    if (!card5.equals(setB.get(4)))
-                    {
-                        attempt++;
-                        lblSignal.setText(oddSignal);
-                        lblSignal.setBackgroundResource(R.color.blue);
-                    }
-                    else
-                    {
+                    addResultIcon(0);
+                    cardList.clear();
 
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-
-                    }
-                }
-                else if (card1.equals(EVEN) && card2.equals(EVEN))
-                {
-                    if (!card5.equals(setC.get(4)))
-                    {
-                        attempt++;
-                        lblSignal.setText(oddSignal);
-                        lblSignal.setBackgroundResource(R.color.blue);
-                    }
-                    else
-                    {
-
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-
-                    }
-                }
-                else if (card1.equals(EVEN) && card2.equals(ODD))
-                {
-
-                    if (!card5.equals(setD.get(4)))
-                    {
-                        attempt++;
-                        lblSignal.setText(evenSignal);
-                        lblSignal.setBackgroundResource(R.color.red);
-                    }
-                    else
-                    {
-
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-
-                    }
+                } else {
+                    addResultIcon(1);
+                    cardList.clear();
                 }
 
+                System.out.println(x + " CASE 4");
                 break;
-
-
-            case 6:
-                card1 = cardList.get(0);
-                card2 = cardList.get(1);
-                card6 = cardList.get(5);
-
-                if (card1.equals(ODD) && card2.equals(ODD))
-                {
-                    if (card6.equals(setA.get(5)))
-                    {
-
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-                    }
-                    else
-                    {
-                        addResultIcon(0);
-                    }
-                }
-                else if (card1.equals(ODD) && card2.equals(EVEN))
-                {
-                    if (card6.equals(setB.get(5)))
-                    {
-
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-                    }
-                    else
-                    {
-                        addResultIcon(0);
-                    }
-                }
-                else if (card1.equals(EVEN) && card2.equals(EVEN))
-                {
-                    if (card6.equals(setC.get(5)))
-                    {
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-                    }
-                    else
-                    {
-                        addResultIcon(0);
-                    }
-                }
-                else if (card1.equals(EVEN) && card2.equals(ODD))
-                {
-
-                    if (card6.equals(setD.get(5)))
-                    {
-                        lblSignal.setText("");
-                        lblSignal.setBackgroundResource(R.color.dark_blue);
-                        cardList.clear();
-                        addResultIcon(1);
-                    }
-                    else
-                    {
-                        addResultIcon(0);
-                    }
-                }
-
-                break;
-
-
-
-
-
+            default:
 
         }
 
-
         viewAttempt();
+
     }
 
     private void viewAttempt() {
 
 
-        txtBoxAttemptCount.setText(attempt+"");
+        txtBoxAttemptCount.setText(attempt + "");
 
 
         layoutSignal.setVisibility(View.VISIBLE);
         imgSicBoLogoCenter.setVisibility(View.INVISIBLE);
 
-        if (attempt == 4)        {
+        if (attempt == 4) {
 
             playNotification();
 
@@ -619,7 +397,6 @@ public class SicboOddEvenActivity extends AppCompatActivity {
             txtBoxAttemptCount.startAnimation(blinkAnimation);
 
 
-
         } else if (attempt == 2) {
 
             attemptLabel.setVisibility(View.VISIBLE);
@@ -630,7 +407,7 @@ public class SicboOddEvenActivity extends AppCompatActivity {
             txtBoxAttemptCount.setTextColor(Color.WHITE);
             attemptLabel.setVisibility(View.VISIBLE);
             txtBoxAttemptCount.setVisibility(View.VISIBLE);
-        }else{
+        } else {
 
             txtBoxAttemptCount.clearAnimation();
             attemptLabel.setVisibility(View.INVISIBLE);
@@ -638,7 +415,6 @@ public class SicboOddEvenActivity extends AppCompatActivity {
 
             layoutSignal.setVisibility(View.INVISIBLE);
             imgSicBoLogoCenter.setVisibility(View.VISIBLE);
-
 
 
         }
@@ -663,9 +439,10 @@ public class SicboOddEvenActivity extends AppCompatActivity {
     }
 
     private void addResultIcon(int i) {
-        if(i == 1){
+        if (i == 1) {
             attempts.add(attempt);
-        }else {
+            cardList.clear();
+        } else {
 
             cardList.clear();
             attempts.add(0); //this is for DS
@@ -677,23 +454,6 @@ public class SicboOddEvenActivity extends AppCompatActivity {
         imgSicBoLogoCenter.setVisibility(View.VISIBLE);
     }
 
-
-
-    public void bigClicked(View view) {
-
-        displayToView(11);
-        variables.RESULT = "";
-    }
-
-    public void smallClicked(View view) {
-        displayToView(5);
-        variables.RESULT = "";
-    }
-
-    public void zeroClicked(View view) {
-        displayToView(0);
-        variables.RESULT = "";
-    }
 
     public void evenClicked(View view) {
 
