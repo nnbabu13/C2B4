@@ -67,22 +67,22 @@
                     android:onClick="baccaratClick"
                     android:scaleType="fitXY" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:background="@drawable/smallbig_card_background"
-                    android:onClick="sicBoClick"
-                    android:scaleType="fitXY" />
+<!--                <androidx.appcompat.widget.AppCompatButton-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_margin="5dp"-->
+<!--                    android:background="@drawable/smallbig_card_background"-->
+<!--                    android:onClick="sicBoClick"-->
+<!--                    android:scaleType="fitXY" />-->
 
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:onClick="sicboOddEvenClicked"
-                    android:background="@drawable/oddeven_card_background"
-                    android:scaleType="fitXY" />
+<!--                <androidx.appcompat.widget.AppCompatButton-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_margin="5dp"-->
+<!--                    android:onClick="sicboOddEvenClicked"-->
+<!--                    android:background="@drawable/oddeven_card_background"-->
+<!--                    android:scaleType="fitXY" />-->
 
 
 

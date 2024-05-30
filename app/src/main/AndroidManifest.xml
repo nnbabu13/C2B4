@@ -19,10 +19,7 @@
             android:name=".BaccaratHongkongActivity"
             android:screenOrientation="landscape"
             android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".BaccaratActivity"
             android:exported="false"
@@ -36,7 +33,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ActivationActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>

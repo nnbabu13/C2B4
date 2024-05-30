@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CustomAdapterAttempts extends BaseAdapter {
 
-    Integer[] attempts =  { 1,2,3,4};
+    Integer[] attempts =  { 1,2,3,4,5,6,7,8};
 
 
 

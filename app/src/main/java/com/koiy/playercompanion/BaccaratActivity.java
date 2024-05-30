@@ -168,6 +168,8 @@ public class BaccaratActivity extends AppCompatActivity {
             resultListAll.add(result);
 
             list.add(result);
+
+
             if (list.size() == 7) {
 
 
@@ -219,7 +221,6 @@ public class BaccaratActivity extends AppCompatActivity {
                 displayResultToViewBigRoad(resultsListBigRaod);
 
             } else {
-
                 adapterBaccaratBigRoad.updateData(list);
             }
         }
@@ -356,7 +357,7 @@ public class BaccaratActivity extends AppCompatActivity {
         String bankerSignal = "BANKER";
 
         switch (x) {
-
+//
             case 2:
                 card1 = cardList.get(0);
                 card2 = cardList.get(1);

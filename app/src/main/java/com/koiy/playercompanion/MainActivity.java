@@ -35,10 +35,7 @@ public class MainActivity extends AppCompatActivity  {
     }
 
 
-    public void sicBoClick(View view) {
-        startActivity(new Intent(this,SicboActivity.class));
 
-    }
 
     @Override
     public void onBackPressed() {
@@ -54,9 +51,6 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
-    public void baccaratHongKongClick(View view) {
 
-        startActivity(new Intent(this,BaccaratHongkongActivity.class));
-    }
 }
 
