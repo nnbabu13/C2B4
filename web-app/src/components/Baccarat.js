@@ -21,11 +21,18 @@ function Baccarat({ onBack }) {
     return [];
   };
 
+  // Add this new state near the top with other state declarations
+  const [resultStatus, setResultStatus] = useState([]);
+  
+  // Modify the checkResult function to track result status
+  // Modify the checkResult function
   const checkResult = (cards) => {
     if (waitMode) {
       setPredictionType('waiting');
-      // Get only results after wait mode started
       const postWinResults = cards.slice(waitStartIndex);
+      
+      // Add 'C' for any result during wait mode
+      setResultStatus(prev => [...prev, 'C']);
       
       if (postWinResults.length === 2) {
         const newPrediction = getPredictionSequence(postWinResults[0], postWinResults[1]);
@@ -42,7 +49,7 @@ function Baccarat({ onBack }) {
       }
       return;
     }
-
+  
     // Initial pattern or continuing sequence
     if (cards.length === 2) {
       const newPrediction = getPredictionSequence(cards[0], cards[1]);
@@ -52,27 +59,30 @@ function Baccarat({ onBack }) {
         setPrediction(newPrediction);
         setCurrentPredictionIndex(0);
         setAttempt(0);
+        // Add 'C' for initial two results
+        setResultStatus(prev => [...prev, 'C', 'C']);
       }
     } else if (prediction.length > 0) {
       const currentResult = cards[cards.length - 1];
+      
+      // Check if current result matches prediction
       if (currentResult === prediction[currentPredictionIndex]) {
         setPredictionType('waiting');
-        // Win - enter wait mode and set start index
         setWaitMode(true);
         setWaitStartIndex(cards.length);
         setSignal('WIN - COLLECTING TWO NEW RESULTS');
         setPrediction([]);
         setCurrentPredictionIndex(0);
         setAttempt(0);
-        return;
+        setResultStatus(prev => [...prev, 'W']);
       } else {
-        // Continue with sequence
         setAttempt(prev => prev + 1);
+        setResultStatus(prev => [...prev, 'L']);
+        
         if (currentPredictionIndex < prediction.length - 1) {
           setCurrentPredictionIndex(prev => prev + 1);
           setSignal(`BET ON ${prediction[currentPredictionIndex + 1]}`);
         } else {
-          // Sequence complete without win
           setSignal('SEQUENCE COMPLETE - COLLECTING TWO NEW RESULTS');
           setPrediction([]);
           setCurrentPredictionIndex(0);
@@ -137,6 +147,7 @@ function Baccarat({ onBack }) {
     setCurrentPredictionIndex(0);
     setWaitMode(false);
     setWaitStartIndex(-1);
+    setResultStatus([]); // Reset result status
   };
 
   const renderBigRoad = () => {
@@ -205,9 +216,9 @@ function Baccarat({ onBack }) {
         <button className="control-button banker-button" onClick={handleBankerClick}>Banker</button>
       </div>
       <div className="results-grid">
-        {cardList.map((card, index) => (
-          <div key={index} className={`result-item ${card.toLowerCase()}`}>
-            {card}
+        {resultStatus.map((status, index) => (
+          <div key={index} className={`result-item ${status.toLowerCase()}`}>
+            {status}
           </div>
         ))}
       </div>

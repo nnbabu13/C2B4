@@ -48,10 +48,25 @@
   text-align: center;
   border-radius: 5px;
   color: white;
+  font-weight: bold;
 }
 
+/* Remove or comment out these old classes
 .result-item.player { background-color: #007bff; }
 .result-item.banker { background-color: #e91010; }
+*/
+
+.result-item.w {
+  background-color: #2ecc71;
+}
+
+.result-item.l {
+  background-color: #e74c3c;
+}
+
+.result-item.c {
+  background-color: #95a5a6;
+}
 
 @keyframes blink {
   50% { opacity: 0.5; }
