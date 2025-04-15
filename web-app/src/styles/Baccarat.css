@@ -1,0 +1,175 @@
+.baccarat-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.signal-box {
+  padding: 20px;
+  margin: 20px 0;
+  text-align: center;
+  font-size: 24px;
+  color: white;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.signal-box.normal { background-color: #007bff; }
+.signal-box.warning { background-color: #ffc107; }
+.signal-box.critical { 
+  background-color: #dc3545;
+  animation: blink 1s infinite;
+}
+
+.attempt-counter {
+  font-size: 24px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.attempt-counter.warning { color: #ffc107; }
+.attempt-counter.critical { 
+  color: #dc3545;
+  animation: blink 1s infinite;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.result-item {
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  color: white;
+}
+
+.result-item.player { background-color: #007bff; }
+.result-item.banker { background-color: #e91010; }
+
+@keyframes blink {
+  50% { opacity: 0.5; }
+}
+
+.back-button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.control-button {
+  padding: 15px 30px;
+  font-size: 18px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.3s;
+  background-color: #007bff; /* Default blue for Player */
+}
+
+.banker-button {
+  background-color: #e91010 !important; /* Red for Banker with !important to override */
+}
+
+.control-button:hover {
+  background-color: #0056b3; /* Blue hover for Player */
+}
+
+.banker-button:hover {
+  background-color: #c82333 !important; /* Red hover for Banker */
+}
+
+.player-button:hover {
+  background-color: #0056b3;
+}
+
+.banker-button:hover {
+  background-color: #c82333;
+}
+
+.control-button:hover {
+  background-color: #0056b3;
+}
+
+.card-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.card {
+  padding: 10px 20px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.back-button, .reset-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 80px;  /* Smaller fixed width */
+  height: 35px; /* Fixed height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-button:hover, .reset-button:hover {
+  background-color: #5a6268;
+}
+
+// Remove duplicate hover styles
+.reset-button:hover {
+  background-color: #e0a800;
+}
+
+.prediction-status {
+  margin: 10px 0;
+  font-size: 18px;
+  color: #333;
+  text-align: center;
+}
+
+.signal-box.banker {
+  background-color: #ff6b6b;
+}
+
+.signal-box.player {
+  background-color: #4dabf7;
+}
+
+.signal-box.waiting {
+  background-color: #69db7c;
+}
+
+/* Add this new style for sequence complete message */
+.signal-box.sequence-complete {
+  background-color: #007bff;
+}

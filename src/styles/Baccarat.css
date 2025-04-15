@@ -1,0 +1,42 @@
+.baccarat-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.signal-box {
+  padding: 20px;
+  margin: 20px 0;
+  text-align: center;
+  font-size: 24px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+}
+
+.warning {
+  background-color: #dc3545;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.5; }
+}
+
+.attempt-counter {
+  font-size: 20px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.controls button {
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+}
