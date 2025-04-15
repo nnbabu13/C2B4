@@ -11,6 +11,7 @@ function Baccarat({ onBack }) {
   const [currentPredictionIndex, setCurrentPredictionIndex] = useState(0);
   const [waitMode, setWaitMode] = useState(false);
   const [predictionType, setPredictionType] = useState('waiting');
+  const [results, setResults] = useState([]); // Add this for Big Road
 
   const getPredictionSequence = (card1, card2) => {
     if (card1 === 'BANKER' && card2 === 'BANKER') return ['BANKER', 'PLAYER', 'PLAYER', 'PLAYER'];
@@ -128,6 +129,7 @@ function Baccarat({ onBack }) {
 
   const handleReset = () => {
     setCardList([]);
+    setResults([]);
     setAttempt(0);
     setSignal('');
     setSignalColor('normal');
@@ -137,12 +139,61 @@ function Baccarat({ onBack }) {
     setWaitStartIndex(-1);
   };
 
+  const renderBigRoad = () => {
+    const columns = [];
+    let currentColumn = [];
+    
+    cardList.forEach((result, index) => {
+      if (index === 0) {
+        currentColumn.push(result);
+      } else {
+        const prevResult = cardList[index - 1];
+        
+        if (result !== prevResult || currentColumn.length >= 6) {
+          columns.push([...currentColumn]);
+          currentColumn = [result];
+        } else {
+          currentColumn.push(result);
+        }
+      }
+    });
+    
+    if (currentColumn.length > 0) {
+      columns.push(currentColumn);
+    }
+
+    return (
+      <div className="big-road-container">
+        <div className="big-road">
+          {columns.map((column, colIndex) => (
+            <div key={colIndex} className="big-road-column">
+              {Array(6).fill(null).map((_, rowIndex) => (
+                <div key={`${colIndex}-${rowIndex}`}>
+                  {rowIndex < column.length ? (
+                    <div className={`big-road-cell ${column[rowIndex].toLowerCase()}`}>
+                      {column[rowIndex] === 'BANKER' ? 'B' : 'P'}
+                    </div>
+                  ) : (
+                    <div className="big-road-empty" />
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="baccarat-container">
       <div className="header-buttons">
         <button className="back-button" onClick={onBack}>Back</button>
         <button className="reset-button" onClick={handleReset}>Reset</button>
       </div>
+      
+      {renderBigRoad()} {/* Add Big Road display here */}
+      
       <div className={`signal-box ${signalColor}`}>
         <span>{signal}</span>
       </div>
